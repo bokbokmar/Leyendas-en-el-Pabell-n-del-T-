@@ -21,6 +21,11 @@ public class CamaraJugador : MonoBehaviour
     private Dispensador dispensadorApuntado;
     private ZonaEntrega zonaApuntada;
     private ItemRecogible itemSueloApuntado;
+    private Mesa mesaApuntada;
+    private Clientes clienteApuntado;
+    private Monedas monedaApuntada;
+
+
 
 
     private void Start()
@@ -57,6 +62,7 @@ public class CamaraJugador : MonoBehaviour
         dispensadorApuntado = null;
         zonaApuntada = null;
         itemSueloApuntado = null;
+        mesaApuntada = null;
 
         Ray ray = new Ray(transform.position, transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, distancia, ~ignorar))
@@ -71,6 +77,11 @@ public class CamaraJugador : MonoBehaviour
                 if (hit.transform.TryGetComponent<ZonaEntrega>(out ZonaEntrega zona))
                     zonaApuntada = zona;
 
+            
+
+                if (hit.transform.TryGetComponent<Mesa>(out Mesa mesa))
+                    mesaApuntada = mesa;
+
                 if (hit.transform.TryGetComponent<ItemRecogible>(out ItemRecogible item))
                 {
                     if (item.transform.parent == null)
@@ -78,6 +89,13 @@ public class CamaraJugador : MonoBehaviour
                 }
             }
         }
+
+        if (hit.transform.TryGetComponent<Clientes>(out Clientes cli))
+            clienteApuntado = cli;
+        
+        if (hit.transform.TryGetComponent<Monedas>(out Monedas moneda))
+            monedaApuntada = moneda;
+
     }
 
     private void IntentarInteractuar()
@@ -116,6 +134,45 @@ public class CamaraJugador : MonoBehaviour
             Debug.Log("Item recogido del suelo");
             return;
         }
+
+       
+        if (mesaApuntada != null)
+        {
+            if (inventario.CantidadItems() == 0) { Debug.Log("No tienes items"); return; }
+            ItemRecogible item = inventario.SacarUltimoItem();
+            if (item != null)
+            {
+                bool ok = mesaApuntada.Colocar(item, inventario);
+                if (!ok) inventario.AgregarItem(item.gameObject); 
+            }
+            return;
+        }
+
+        if (clienteApuntado != null)
+        {
+            if (inventario.CantidadItems() == 0) { Debug.Log("No tienes items"); return; }
+            ItemRecogible item = inventario.SacarUltimoItem();
+            if (item != null)
+            {
+                int tipo = IdToTipoTe(item.idIngrediente);
+                if (tipo >= 0)
+                    clienteApuntado.RecibirTeDirecto(tipo);
+                else
+                {
+                    Debug.Log("Eso no es un té");
+                    inventario.AgregarItem(item.gameObject);
+                }
+            }
+            return;
+        }
+
+        if (monedaApuntada != null)
+        {
+            monedaApuntada.Recoger();
+            monedaApuntada = null;
+            return;
+        }
+
     }
 
     private void IntentarSoltar()
@@ -153,4 +210,17 @@ public class CamaraJugador : MonoBehaviour
 
         zonaApuntada.RecuperarIngredientes(inventario, cuerpoJugador);
     }
+
+    private int IdToTipoTe(string id)
+    {
+        switch (id)
+        {
+            case "TeVerde": return 0;
+            case "TeBlanco": return 1;
+            case "TeRojo": return 2;
+            default: return -1;
+        }
+    }
+
+
 }
