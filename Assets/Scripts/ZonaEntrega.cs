@@ -3,14 +3,11 @@ using UnityEngine;
 
 public class ZonaEntrega : MonoBehaviour
 {
-    [Header("Receta")]
-    [Tooltip("IDs de los 2 ingredientes que acepta esta zona")]
-    public string[] ingredientesRequeridos = new string[2];
+    [Header("Recetas disponibles")]
+    [Tooltip("Cada receta tiene sus ingredientes y su resultado")]
+    public List<Receta> recetas = new List<Receta>();
 
     [Header("Resultado")]
-    [Tooltip("Prefab que se genera al completar la receta")]
-    public GameObject prefabResultado;
-
     [Tooltip("Dónde aparece el resultado. Si está vacío, aparece al lado de la zona")]
     public Transform puntoResultado;
 
@@ -22,46 +19,39 @@ public class ZonaEntrega : MonoBehaviour
     public bool destruirIngredientes = true;
 
     [Header("Recuperar ingredientes")]
-    [Tooltip("Si está marcado, el jugador puede sacar los ingredientes con una tecla")]
     public bool permitirRecuperar = true;
-
-    [Tooltip("Dónde se devuelven los ingredientes al recuperarlos. Si está vacío, delante del jugador")]
     public Transform puntoDevolucion;
 
     private Dictionary<string, ItemRecogible> ingredientesColocados = new Dictionary<string, ItemRecogible>();
 
-    public bool RecetaCompleta => ingredientesColocados.Count >= ingredientesRequeridos.Length;
-    public int IngredientesColocados => ingredientesColocados.Count;
     public bool TieneIngredientes => ingredientesColocados.Count > 0;
+    public int IngredientesColocados => ingredientesColocados.Count;
 
-  
     public bool Entregar(ItemRecogible item, InventarioJugador inventario)
     {
         if (item == null) return false;
 
-        if (RecetaCompleta)
-        {
-            Debug.Log("ZonaEntrega: la receta ya está completa");
-            return false;
-        }
-
         string id = item.idIngrediente;
-
-        bool esRequerido = false;
-        foreach (string req in ingredientesRequeridos)
-        {
-            if (req == id) { esRequerido = true; break; }
-        }
-
-        if (!esRequerido)
-        {
-            Debug.Log($"ZonaEntrega: '{id}' no es un ingrediente válido aquí");
-            return false;
-        }
 
         if (ingredientesColocados.ContainsKey(id))
         {
             Debug.Log($"ZonaEntrega: ya tienes '{id}' colocado");
+            return false;
+        }
+
+        bool esValido = false;
+        foreach (Receta r in recetas)
+        {
+            foreach (string ing in r.ingredientes)
+            {
+                if (ing == id) { esValido = true; break; }
+            }
+            if (esValido) break;
+        }
+
+        if (!esValido)
+        {
+            Debug.Log($"ZonaEntrega: '{id}' no es ingrediente de ninguna receta");
             return false;
         }
 
@@ -80,67 +70,105 @@ public class ZonaEntrega : MonoBehaviour
         if (item.TryGetComponent<Collider>(out Collider col))
             col.enabled = false;
 
-        Debug.Log($"ZonaEntrega: ingrediente '{id}' colocado ({ingredientesColocados.Count}/{ingredientesRequeridos.Length})");
+        Debug.Log($"ZonaEntrega: '{id}' colocado ({ingredientesColocados.Count})");
 
-        if (RecetaCompleta)
-            CompletarReceta();
+        Receta recetaCompleta = BuscarRecetaCompleta();
+        if (recetaCompleta != null)
+            CompletarReceta(recetaCompleta);
 
         return true;
     }
 
-    private void CompletarReceta()
+    private Receta BuscarRecetaCompleta()
     {
-        Debug.Log("ZonaEntrega: ¡receta completa!");
+        foreach (Receta r in recetas)
+        {
+            bool completa = true;
+            foreach (string ing in r.ingredientes)
+            {
+                if (!ingredientesColocados.ContainsKey(ing))
+                {
+                    completa = false;
+                    break;
+                }
+            }
+            if (completa) return r;
+        }
+        return null;
+    }
+
+    private void CompletarReceta(Receta receta)
+    {
+        Debug.Log($"ZonaEntrega: ¡receta completa! → {receta.nombre}");
 
         if (efectoEntrega != null)
             Instantiate(efectoEntrega, transform.position, Quaternion.identity);
 
         if (destruirIngredientes)
         {
-            foreach (var kvp in ingredientesColocados)
+            foreach (string ing in receta.ingredientes)
             {
-                if (kvp.Value != null)
-                    Destroy(kvp.Value.gameObject);
+                if (ingredientesColocados.ContainsKey(ing))
+                {
+                    ItemRecogible item = ingredientesColocados[ing];
+                    if (item != null) Destroy(item.gameObject);
+                    ingredientesColocados.Remove(ing);
+                }
+            }
+        }
+        else
+        {
+            foreach (string ing in receta.ingredientes)
+            {
+                if (ingredientesColocados.ContainsKey(ing))
+                {
+                    ItemRecogible item = ingredientesColocados[ing];
+                    if (item != null) item.transform.SetParent(null);
+                    ingredientesColocados.Remove(ing);
+                }
             }
         }
 
-        ingredientesColocados.Clear();
-
-        if (prefabResultado != null)
+        if (receta.resultado != null)
         {
             Vector3 pos = (puntoResultado != null)
                 ? puntoResultado.position
                 : transform.position + transform.right * offsetResultado;
 
-            Quaternion rot = (puntoResultado != null)
-                ? puntoResultado.rotation
-                : Quaternion.identity;
+            pos.y += 0.3f;
 
-            Instantiate(prefabResultado, pos, rot);
-            Debug.Log("ZonaEntrega: resultado generado");
+            GameObject resultado = Instantiate(receta.resultado, pos, Quaternion.identity);
+
+            if (resultado.TryGetComponent<Rigidbody>(out Rigidbody rb))
+            {
+                rb.isKinematic = true;
+                rb.useGravity = false;
+                rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+            }
+
+            StartCoroutine(ActivarFisicaTrasDelay(resultado, 0.2f));
         }
     }
 
-    
+    private System.Collections.IEnumerator ActivarFisicaTrasDelay(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (obj == null) yield break;
+
+        if (obj.TryGetComponent<Rigidbody>(out Rigidbody rb))
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+        }
+        if (obj.TryGetComponent<Collider>(out Collider col))
+            col.enabled = true;
+    }
+
     public bool RecuperarIngredientes(InventarioJugador inventario, Transform jugador)
     {
-        if (!permitirRecuperar)
-        {
-            Debug.Log("ZonaEntrega: no se permite recuperar ingredientes");
-            return false;
-        }
-
-        if (ingredientesColocados.Count == 0)
-        {
-            Debug.Log("ZonaEntrega: no hay ingredientes que recuperar");
-            return false;
-        }
-
-        if (inventario == null)
-        {
-            Debug.Log("ZonaEntrega: no hay inventario");
-            return false;
-        }
+        if (!permitirRecuperar) return false;
+        if (ingredientesColocados.Count == 0) return false;
+        if (inventario == null) return false;
 
         List<ItemRecogible> itemsADevolver = new List<ItemRecogible>(ingredientesColocados.Values);
         ingredientesColocados.Clear();
@@ -150,7 +178,7 @@ public class ZonaEntrega : MonoBehaviour
             if (item == null) continue;
 
             item.transform.SetParent(null);
-            item.transform.localScale = item.escalaOriginal;   
+            item.transform.localScale = item.escalaOriginal;
             item.transform.localRotation = Quaternion.identity;
 
             bool ok = inventario.AgregarItem(item.gameObject);
@@ -164,14 +192,11 @@ public class ZonaEntrega : MonoBehaviour
                         : transform.position + transform.right * offsetResultado);
 
                 item.transform.position = pos;
-                item.transform.rotation = Quaternion.identity;
 
                 if (item.TryGetComponent<Rigidbody>(out Rigidbody rb))
                 {
                     rb.isKinematic = false;
                     rb.useGravity = true;
-                    rb.linearVelocity = Vector3.zero;
-                    rb.angularVelocity = Vector3.zero;
                 }
                 if (item.TryGetComponent<Collider>(out Collider col))
                     col.enabled = true;

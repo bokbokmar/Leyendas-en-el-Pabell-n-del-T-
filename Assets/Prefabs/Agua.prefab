@@ -105,8 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94dac67e55b8c4b40a03a4ad898318ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemRecogible
-  nombreItem: Dis
-  idIngrediente: Ingrediente 2
+  nombreItem: Agua
+  idIngrediente: Agua
   icono: {fileID: 0}
   escalaEnMano: {x: 0.1, y: 0.1, z: 0.1}
   recogido: 0

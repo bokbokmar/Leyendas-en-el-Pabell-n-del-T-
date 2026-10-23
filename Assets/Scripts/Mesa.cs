@@ -131,4 +131,7 @@ public class Mesa : MonoBehaviour
         itemEnMesa = null;
         temporizador = 0f;
     }
+
+
+
 }

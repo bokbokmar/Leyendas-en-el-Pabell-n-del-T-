@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94dac67e55b8c4b40a03a4ad898318ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemRecogible
-  nombreItem: hojaverde
-  idIngrediente: hojaverde
+  nombreItem: HojaVerde
+  idIngrediente: HojaVerde
   icono: {fileID: 0}
   escalaEnMano: {x: 0.2, y: 0.2, z: 0.2}
   recogido: 0

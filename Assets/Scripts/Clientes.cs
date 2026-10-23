@@ -22,6 +22,8 @@ public class Clientes : MonoBehaviour
     public Transform objetivo;
     public Transform salida;
     private NavMeshAgent agente;
+    public GameObject iconoEspera;
+
     [SerializeField] private GameObject moneda;
 
     private void Start()
@@ -38,10 +40,13 @@ public class Clientes : MonoBehaviour
     {
         ElegirAsiento();
 
-        if (sentado && !clienteAtendido)
-            transform.GetChild(5).gameObject.SetActive(true);
-        else if (!sentado)
-            transform.GetChild(5).gameObject.SetActive(false);
+        if (iconoEspera != null)
+        {
+            if (sentado && !clienteAtendido)
+                iconoEspera.SetActive(true);
+            else
+                iconoEspera.SetActive(false);
+        }
 
         if (!agente.pathPending)
         {
@@ -77,36 +82,66 @@ public class Clientes : MonoBehaviour
         }
     }
 
+
+    private int IdToTipo(string id)
+    {
+        switch (id)
+        {
+            case "TeVerde": return 0;
+            case "TeBlanco": return 1;
+            case "TeRojo": return 2;
+            default: return -1;
+        }
+    }
+
     public void ElegirTe()
     {
         teDeseado = Random.Range(0, 3);
         clienteAtendido = true;
-        transform.GetChild(5).gameObject.SetActive(false);
+
+        for (int i = 0; i < hojas.Length; i++)
+            hojas[i].SetActive(false);
+
         hojas[teDeseado].SetActive(true);
+
+        if (iconoEspera != null)
+            iconoEspera.SetActive(false);
+
         Debug.Log($"Cliente quiere té tipo {teDeseado}");
     }
 
-    
-    public void RecibirTeDirecto(int tipoDeTe)
-    {
-        hojas[teDeseado].SetActive(false);
 
-        if (tipoDeTe == teDeseado)
+    public void RecibirTeDirecto(ItemRecogible item)
+    {
+        if (item == null) return;
+
+        int tipoEntregado = IdToTipo(item.idIngrediente);
+
+        for (int i = 0; i < hojas.Length; i++)
+            hojas[i].SetActive(false);
+        if (iconoEspera != null)
+            iconoEspera.SetActive(false);
+
+        if (tipoEntregado == teDeseado)
         {
             clienteSatisfecho = true;
             clienteInsatisfecho = false;
+            Debug.Log($"Cliente satisfecho: quería {teDeseado}, recibió {tipoEntregado}");
         }
         else
         {
             clienteSatisfecho = false;
             clienteInsatisfecho = true;
+            Debug.Log($"Cliente insatisfecho: quería {teDeseado}, recibió {tipoEntregado}");
         }
 
         esperando = false;
         Irse();
+
+        Destroy(item.gameObject);
     }
 
-    
+
     public void IrARecogerTe()
     {
         if (mesa == null) return;
@@ -122,7 +157,10 @@ public class Clientes : MonoBehaviour
 
         bool correcto = mesa.ClienteRecogeTe(teDeseado, this);
 
-        hojas[teDeseado].SetActive(false);
+        for (int i = 0; i < hojas.Length; i++)
+            hojas[i].SetActive(false);
+        if (iconoEspera != null)
+            iconoEspera.SetActive(false);
 
         if (correcto)
         {

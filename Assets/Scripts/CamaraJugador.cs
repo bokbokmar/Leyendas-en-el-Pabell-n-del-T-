@@ -61,41 +61,41 @@ public class CamaraJugador : MonoBehaviour
     {
         dispensadorApuntado = null;
         zonaApuntada = null;
-        itemSueloApuntado = null;
         mesaApuntada = null;
+        itemSueloApuntado = null;
+        clienteApuntado = null;
+        monedaApuntada = null;
 
         Ray ray = new Ray(transform.position, transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hit, distancia, ~ignorar))
         {
+            if (hit.transform == null) return;   // <-- protección
+
             float dist = Vector3.Distance(transform.position, hit.transform.position);
 
-            if (dist <= distanciaMaximaInteraccion)
+            if (dist > distanciaMaximaInteraccion) return;
+
+            if (hit.transform.TryGetComponent<Dispensador>(out Dispensador disp))
+                dispensadorApuntado = disp;
+
+            if (hit.transform.TryGetComponent<ZonaEntrega>(out ZonaEntrega zona))
+                zonaApuntada = zona;
+
+            if (hit.transform.TryGetComponent<Mesa>(out Mesa mesa))
+                mesaApuntada = mesa;
+
+            if (hit.transform.TryGetComponent<Clientes>(out Clientes cli))
+                clienteApuntado = cli;
+
+            if (hit.transform.TryGetComponent<Monedas>(out Monedas moneda))
+                monedaApuntada = moneda;
+
+            if (hit.transform.TryGetComponent<ItemRecogible>(out ItemRecogible item))
             {
-                if (hit.transform.TryGetComponent<Dispensador>(out Dispensador disp))
-                    dispensadorApuntado = disp;
-
-                if (hit.transform.TryGetComponent<ZonaEntrega>(out ZonaEntrega zona))
-                    zonaApuntada = zona;
-
-            
-
-                if (hit.transform.TryGetComponent<Mesa>(out Mesa mesa))
-                    mesaApuntada = mesa;
-
-                if (hit.transform.TryGetComponent<ItemRecogible>(out ItemRecogible item))
-                {
-                    if (item.transform.parent == null)
-                        itemSueloApuntado = item;
-                }
+                if (item.transform.parent == null)
+                    itemSueloApuntado = item;
             }
         }
-
-        if (hit.transform.TryGetComponent<Clientes>(out Clientes cli))
-            clienteApuntado = cli;
-        
-        if (hit.transform.TryGetComponent<Monedas>(out Monedas moneda))
-            monedaApuntada = moneda;
-
     }
 
     private void IntentarInteractuar()
@@ -150,13 +150,21 @@ public class CamaraJugador : MonoBehaviour
 
         if (clienteApuntado != null)
         {
-            if (inventario.CantidadItems() == 0) { Debug.Log("No tienes items"); return; }
+            if (inventario.CantidadItems() == 0)
+            {
+                Debug.Log("No tienes items para entregar");
+                return;
+            }
+
             ItemRecogible item = inventario.SacarUltimoItem();
             if (item != null)
             {
-                int tipo = IdToTipoTe(item.idIngrediente);
-                if (tipo >= 0)
-                    clienteApuntado.RecibirTeDirecto(tipo);
+                if (item.idIngrediente == "TeVerde" ||
+                    item.idIngrediente == "TeBlanco" ||
+                    item.idIngrediente == "TeRojo")
+                {
+                    clienteApuntado.RecibirTeDirecto(item);
+                }
                 else
                 {
                     Debug.Log("Eso no es un té");
