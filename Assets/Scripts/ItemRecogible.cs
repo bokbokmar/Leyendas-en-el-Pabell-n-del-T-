@@ -12,6 +12,6 @@ public class ItemRecogible : MonoBehaviour
 
     private void Awake()
     {
-        escalaOriginal = transform.localScale;
+        //escalaOriginal = transform.localScale;
     }
 }
