@@ -17,6 +17,7 @@ public class CamaraJugador : MonoBehaviour
     private float rotacionX = 0f;
     private float rotacionY = 0f;
 
+    #region referencias scripts
     private InventarioJugador inventario;
     private Dispensador dispensadorApuntado;
     private ZonaEntrega zonaApuntada;
@@ -24,7 +25,7 @@ public class CamaraJugador : MonoBehaviour
     private Mesa mesaApuntada;
     private Clientes clienteApuntado;
     private Monedas monedaApuntada;
-
+    #endregion
 
 
 
@@ -67,6 +68,7 @@ public class CamaraJugador : MonoBehaviour
         monedaApuntada = null;
 
         Ray ray = new Ray(transform.position, transform.forward);
+        Debug.DrawRay(transform.position, transform.forward * distanciaMaximaInteraccion, Color.red);
         if (Physics.Raycast(ray, out RaycastHit hit, distancia, ~ignorar))
         {
             if (hit.transform == null) return;   // <-- protección
@@ -135,7 +137,7 @@ public class CamaraJugador : MonoBehaviour
             return;
         }
 
-       
+
         if (mesaApuntada != null)
         {
             if (inventario.CantidadItems() == 0) { Debug.Log("No tienes items"); return; }
@@ -143,7 +145,7 @@ public class CamaraJugador : MonoBehaviour
             if (item != null)
             {
                 bool ok = mesaApuntada.Colocar(item, inventario);
-                if (!ok) inventario.AgregarItem(item.gameObject); 
+                if (!ok) inventario.AgregarItem(item.gameObject);
             }
             return;
         }

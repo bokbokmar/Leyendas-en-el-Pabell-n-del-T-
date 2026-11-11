@@ -3,21 +3,21 @@ using UnityEngine.AI;
 
 public class Clientes : MonoBehaviour
 {
-    public int teDeseado;          
+    public int teDeseado;
     public int auxiliarsoide;
     public bool clienteSatisfecho;
     public bool clienteInsatisfecho;
-    public bool clienteAtendido;   
+    public bool clienteAtendido;
     public bool sentado;
     public bool asientoElegido;
 
     public float tiempoEspera = 30f;
     public bool esperando;
 
-    public GameObject[] hojas;     
+    public GameObject[] hojas;
 
     public Spawner generador;
-    public Mesa mesa;              
+    public Mesa mesa;
 
     public Transform objetivo;
     public Transform salida;
@@ -32,8 +32,10 @@ public class Clientes : MonoBehaviour
         auxiliarsoide = Random.Range(0, 4);
         generador = GameObject.Find("Spawner de Clientes").GetComponent<Spawner>();
 
-        if (mesa == null)
-            mesa = FindObjectOfType<Mesa>();
+        //if (mesa == null)
+        //{
+        //    mesa = FindObjectOfType<Mesa>();
+        //}
     }
 
     private void Update()
