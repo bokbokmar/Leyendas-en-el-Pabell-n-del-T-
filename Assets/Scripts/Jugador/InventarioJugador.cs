@@ -6,7 +6,12 @@ public class InventarioJugador : MonoBehaviour
     public Transform manoJugador;
     public int capacidadMaxima = 5;
 
-    private List<ItemRecogible> items = new List<ItemRecogible>();
+    [SerializeField] private List<ItemRecogible> items = new List<ItemRecogible>();
+
+    private void Update()
+    {
+        RevisarMano();
+    }
 
     public bool TieneEspacio() => items.Count < capacidadMaxima;
     public int CantidadItems() => items.Count;
@@ -16,7 +21,7 @@ public class InventarioJugador : MonoBehaviour
         if (itemGO == null) return false;
         if (!TieneEspacio())
         {
-            Destroy(itemGO);
+            //Destroy(itemGO);
             return false;
         }
 
@@ -30,10 +35,11 @@ public class InventarioJugador : MonoBehaviour
         if (itemGO.TryGetComponent<Collider>(out Collider col)) col.enabled = false;
 
         itemGO.transform.SetParent(manoJugador);
-        itemGO.transform.localPosition = Vector3.zero;
+        itemGO.transform.localPosition = item.transform.parent.transform.position;
+        //itemGO.transform.localPosition = Vector3.zero;
         itemGO.transform.localRotation = Quaternion.identity;
 
-        itemGO.transform.localScale = item.escalaEnMano;  
+        //itemGO.transform.localScale = item.escalaEnMano;
 
         return true;
     }
@@ -49,5 +55,17 @@ public class InventarioJugador : MonoBehaviour
         if (item.TryGetComponent<Collider>(out Collider col)) col.enabled = true;
         item.recogido = false;
         return item;
+    }
+
+    public void RevisarMano()
+    {
+        if (manoJugador.childCount != 0)
+        {
+            items[0] = manoJugador.GetChild(0).GetComponent<ItemRecogible>();
+        }
+        else
+        {
+            items[0] = null;
+        }
     }
 }

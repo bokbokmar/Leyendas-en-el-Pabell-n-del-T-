@@ -1,15 +1,22 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Dispensador : MonoBehaviour
+public class Dispensador : MonoBehaviour, IInteractuable
 {
-    public List<GameObject> prefabsItems;  
+    [SerializeField] private InventarioJugador inventario;
+    [SerializeField] private GameObject prefabADispensar;
 
-    public GameObject EntregarItem()
+    //public GameObject EntregarItem()
+    //{
+    //    if (prefabsItems.Count == 0) return null;
+
+    //    GameObject prefab = prefabsItems[Random.Range(0, prefabsItems.Count)];
+    //    return Instantiate(prefab);
+    //}
+
+    public void Interactuar()
     {
-        if (prefabsItems.Count == 0) return null;
-
-        GameObject prefab = prefabsItems[Random.Range(0, prefabsItems.Count)];
-        return Instantiate(prefab); 
+        Debug.Log("Interaccion");
+        //inventario.AgregarItem(prefabADispensar);
+        Instantiate(prefabADispensar, inventario.manoJugador);
     }
 }

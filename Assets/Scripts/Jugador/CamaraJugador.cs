@@ -39,10 +39,10 @@ public class CamaraJugador : MonoBehaviour
     private void Update()
     {
         MoverCamara();
-        DetectarObjetivo();
-        IntentarInteractuar();
-        IntentarSoltar();
-        IntentarRecuperarIngredientes();
+        //DetectarObjetivo();
+        //IntentarInteractuar();
+        //IntentarSoltar();
+        //IntentarRecuperarIngredientes();
     }
 
     private void MoverCamara()
@@ -83,8 +83,8 @@ public class CamaraJugador : MonoBehaviour
             if (hit.transform.TryGetComponent<ZonaEntrega>(out ZonaEntrega zona))
                 zonaApuntada = zona;
 
-            if (hit.transform.TryGetComponent<Mesa>(out Mesa mesa))
-                mesaApuntada = mesa;
+            //if (hit.transform.TryGetComponent<Mesa>(out Mesa mesa))
+            //    mesaApuntada = mesa;
 
             if (hit.transform.TryGetComponent<Clientes>(out Clientes cli))
                 clienteApuntado = cli;
@@ -108,8 +108,8 @@ public class CamaraJugador : MonoBehaviour
         if (dispensadorApuntado != null)
         {
             if (!inventario.TieneEspacio()) { Debug.Log("Inventario lleno"); return; }
-            GameObject nuevoItem = dispensadorApuntado.EntregarItem();
-            if (nuevoItem != null) inventario.AgregarItem(nuevoItem);
+            //GameObject nuevoItem = dispensadorApuntado.EntregarItem();
+            //if (nuevoItem != null) { inventario.AgregarItem(nuevoItem); }
             return;
         }
 
@@ -187,13 +187,14 @@ public class CamaraJugador : MonoBehaviour
 
     private void IntentarSoltar()
     {
-        if (!Input.GetKeyDown(teclaSoltar)) return;
-        if (inventario == null || inventario.CantidadItems() == 0) return;
+        if (!Input.GetKeyDown(teclaSoltar)) { return; }
+        if (inventario == null || inventario.CantidadItems() == 0) { return; }
 
         ItemRecogible item = inventario.SacarUltimoItem();
-        if (item == null) return;
+        if (item == null) { return; }
 
-        Vector3 posicion = transform.position + transform.forward * 1.5f;
+        Vector3 posicion = transform.parent.transform.position + transform.forward * 1.5f;
+        posicion.y = 0;
         item.transform.position = posicion;
         item.transform.rotation = Quaternion.identity;
         item.transform.SetParent(null);
