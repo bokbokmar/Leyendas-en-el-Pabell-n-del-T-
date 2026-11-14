@@ -1,17 +1,17 @@
 using UnityEngine;
 
-public class ItemRecogible : MonoBehaviour
+public class ItemRecogible : MonoBehaviour, IInteractuable
 {
     public string nombreItem;
-    public string idIngrediente;   
+    public string idIngrediente;
     public Sprite icono;
     public Vector3 escalaEnMano = new Vector3(0.2f, 0.2f, 0.2f);
 
     [HideInInspector] public bool recogido = false;
     [HideInInspector] public Vector3 escalaOriginal;
 
-    private void Awake()
+    public void Interactuar()
     {
-        //escalaOriginal = transform.localScale;
+
     }
 }

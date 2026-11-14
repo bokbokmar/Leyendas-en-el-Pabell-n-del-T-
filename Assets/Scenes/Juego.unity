@@ -479,7 +479,7 @@ Transform:
   m_GameObject: {fileID: 155934767}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.68, y: 1.155, z: 8.67}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1097,8 +1097,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8b64af68be95d4fab1e8dee452d39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dispensador
-  inventario: {fileID: 0}
-  prefabADispensar: {fileID: 0}
+  inventario: {fileID: 947034309}
+  prefabADispensar: {fileID: 6620231090687203328, guid: a1082c5b978522845969d848615df27c, type: 3}
 --- !u!1 &709765009
 GameObject:
   m_ObjectHideFlags: 0
@@ -1323,7 +1323,7 @@ GameObject:
   - component: {fileID: 763771445}
   - component: {fileID: 763771444}
   - component: {fileID: 763771443}
-  - component: {fileID: 763771442}
+  - component: {fileID: 763771447}
   m_Layer: 0
   m_Name: Combinacion
   m_TagString: Untagged
@@ -1331,40 +1331,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &763771442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 763771441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 298c422349c3cd349b6d2df9d2a2a8f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ZonaEntrega
-  recetas:
-  - ingredientes:
-    - HojaVerde
-    - Agua
-    resultado: {fileID: 9211330689459700865, guid: 90dce372762b5844eb5932b2707ad708, type: 3}
-    nombre: TeVerde
-  - ingredientes:
-    - HojaBlanca
-    - Agua
-    resultado: {fileID: 8135945434449890098, guid: 78c79d236b64ddf46a64b3955f8b81f7, type: 3}
-    nombre: TeBlanco
-  - ingredientes:
-    - HojaRoja
-    - Agua
-    resultado: {fileID: 7768058869842098856, guid: 8cbdc0840a5f5a74a8fcc7bba34e5dea, type: 3}
-    nombre: TeRojo
-  puntoResultado: {fileID: 557649036}
-  offsetResultado: 0
-  efectoEntrega: {fileID: 0}
-  destruirIngredientes: 1
-  permitirRecuperar: 1
-  puntoDevolucion: {fileID: 0}
 --- !u!65 &763771443
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1458,6 +1424,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &763771447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 763771441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9bcc12ccbadb33439675b5580b50ec5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Maquina
+  tazaTeVerde: {fileID: 9211330689459700865, guid: 90dce372762b5844eb5932b2707ad708, type: 3}
+  tazaTeBlanco: {fileID: 8135945434449890098, guid: 78c79d236b64ddf46a64b3955f8b81f7, type: 3}
+  tazaTeRojo: {fileID: 7768058869842098856, guid: 8cbdc0840a5f5a74a8fcc7bba34e5dea, type: 3}
+  tieneAgua: 0
+  tieneHojas: 0
+  hojasEnMaquina: {fileID: 0}
+  inventario: {fileID: 947034309}
+  puntoTaza: {fileID: 523193056}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1595,7 +1581,7 @@ Transform:
   m_GameObject: {fileID: 947034307}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -839, y: -10, z: 164}
+  m_LocalPosition: {x: -1916, y: 130.5, z: 764}
   m_LocalScale: {x: 78.590065, y: 78.590065, z: 78.590065}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1616,8 +1602,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventarioJugador
   manoJugador: {fileID: 1439154212}
   capacidadMaxima: 1
-  items:
-  - {fileID: 0}
+  items: []
+  objetoEnMano: {fileID: 0}
 --- !u!1 &965409348
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,8 +2341,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8b64af68be95d4fab1e8dee452d39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dispensador
-  inventario: {fileID: 0}
-  prefabADispensar: {fileID: 0}
+  inventario: {fileID: 947034309}
+  prefabADispensar: {fileID: 2427853939250428023, guid: 61a304aa7b461fe40909cedf10049509, type: 3}
 --- !u!65 &1322543423
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3478,8 +3464,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a8b64af68be95d4fab1e8dee452d39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Dispensador
-  inventario: {fileID: 0}
-  prefabADispensar: {fileID: 0}
+  inventario: {fileID: 947034309}
+  prefabADispensar: {fileID: 3472437675201034910, guid: d8cbd09a139ff2c4aae60ac489a6736d, type: 3}
 --- !u!65 &1781674312
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3970,7 +3956,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1235461680297008977, guid: 78c79d236b64ddf46a64b3955f8b81f7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -42.807648
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1235461680297008977, guid: 78c79d236b64ddf46a64b3955f8b81f7, type: 3}
       propertyPath: m_LocalPosition.z

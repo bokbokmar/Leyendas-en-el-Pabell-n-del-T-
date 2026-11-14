@@ -100,117 +100,32 @@ public class CamaraJugador : MonoBehaviour
         }
     }
 
-    private void IntentarInteractuar()
-    {
-        if (!Input.GetKeyDown(teclaInteractuar)) return;
-        if (inventario == null) return;
-
-        if (dispensadorApuntado != null)
-        {
-            if (!inventario.TieneEspacio()) { Debug.Log("Inventario lleno"); return; }
-            //GameObject nuevoItem = dispensadorApuntado.EntregarItem();
-            //if (nuevoItem != null) { inventario.AgregarItem(nuevoItem); }
-            return;
-        }
-
-        if (zonaApuntada != null)
-        {
-            if (inventario.CantidadItems() == 0) { Debug.Log("No tienes items"); return; }
-            ItemRecogible item = inventario.SacarUltimoItem();
-            if (item != null)
-            {
-                bool ok = zonaApuntada.Entregar(item, inventario);
-                if (!ok) inventario.AgregarItem(item.gameObject);
-            }
-            return;
-        }
-
-        if (itemSueloApuntado != null)
-        {
-            if (!inventario.TieneEspacio()) { Debug.Log("Inventario lleno"); return; }
-
-            GameObject itemGO = itemSueloApuntado.gameObject;
-            itemSueloApuntado = null;
-
-            inventario.AgregarItem(itemGO);
-            Debug.Log("Item recogido del suelo");
-            return;
-        }
-
-
-        if (mesaApuntada != null)
-        {
-            if (inventario.CantidadItems() == 0) { Debug.Log("No tienes items"); return; }
-            ItemRecogible item = inventario.SacarUltimoItem();
-            if (item != null)
-            {
-                bool ok = mesaApuntada.Colocar(item, inventario);
-                if (!ok) inventario.AgregarItem(item.gameObject);
-            }
-            return;
-        }
-
-        if (clienteApuntado != null)
-        {
-            if (inventario.CantidadItems() == 0)
-            {
-                Debug.Log("No tienes items para entregar");
-                return;
-            }
-
-            ItemRecogible item = inventario.SacarUltimoItem();
-            if (item != null)
-            {
-                if (item.idIngrediente == "TeVerde" ||
-                    item.idIngrediente == "TeBlanco" ||
-                    item.idIngrediente == "TeRojo")
-                {
-                    clienteApuntado.RecibirTeDirecto(item);
-                }
-                else
-                {
-                    Debug.Log("Eso no es un té");
-                    inventario.AgregarItem(item.gameObject);
-                }
-            }
-            return;
-        }
-
-        if (monedaApuntada != null)
-        {
-            monedaApuntada.Recoger();
-            monedaApuntada = null;
-            return;
-        }
-
-    }
-
     private void IntentarSoltar()
     {
-        if (!Input.GetKeyDown(teclaSoltar)) { return; }
-        if (inventario == null || inventario.CantidadItems() == 0) { return; }
+        //if (!Input.GetKeyDown(teclaSoltar)) { return; }
+        //if (inventario == null || inventario.CantidadItems() == 0) { return; }
 
-        ItemRecogible item = inventario.SacarUltimoItem();
-        if (item == null) { return; }
+        //ItemRecogible item = inventario.SacarUltimoItem();
+        //if (item == null) { return; }
 
-        Vector3 posicion = transform.parent.transform.position + transform.forward * 1.5f;
-        posicion.y = 0;
-        item.transform.position = posicion;
-        item.transform.rotation = Quaternion.identity;
-        item.transform.SetParent(null);
+        //Vector3 posicion = transform.parent.transform.position + transform.forward * 1.5f;
+        //posicion.y = 0;
+        //item.transform.position = posicion;
+        //item.transform.rotation = Quaternion.identity;
+        //item.transform.SetParent(null);
 
-        if (item.TryGetComponent<Rigidbody>(out Rigidbody rb))
-        {
-            rb.isKinematic = false;
-            rb.useGravity = true;
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
-        }
+        //if (item.TryGetComponent<Rigidbody>(out Rigidbody rb))
+        //{
+        //    rb.isKinematic = false;
+        //    rb.useGravity = true;
+        //    rb.linearVelocity = Vector3.zero;
+        //    rb.angularVelocity = Vector3.zero;
+        //}
 
-        if (item.TryGetComponent<Collider>(out Collider col))
-            col.enabled = true;
+        //if (item.TryGetComponent<Collider>(out Collider col))
+        //    col.enabled = true;
 
-        Debug.Log("Item soltado");
+        //Debug.Log("Item soltado");
     }
 
     private void IntentarRecuperarIngredientes()
@@ -219,7 +134,7 @@ public class CamaraJugador : MonoBehaviour
         if (zonaApuntada == null) return;
         if (inventario == null) return;
 
-        zonaApuntada.RecuperarIngredientes(inventario, cuerpoJugador);
+        //zonaApuntada.RecuperarIngredientes(inventario, cuerpoJugador);
     }
 
     private int IdToTipoTe(string id)

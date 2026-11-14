@@ -13,8 +13,7 @@ public class ControladorJugador : MonoBehaviour
         {
             IntentarInteractuar();
         }
-        IntentarSoltar();
-        IntentarRecuperarIngredientes();
+        //IntentarSoltar();
     }
 
     private void IntentarInteractuar()
@@ -35,7 +34,7 @@ public class ControladorJugador : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Q) && inventario.CantidadItems() != 0)
         {
-            ItemRecogible itemEnMano = inventario.SacarUltimoItem();
+            ItemRecogible itemEnMano = null;
             if (itemEnMano == null) { return; }
 
             Vector3 posicion = transform.parent.transform.position + transform.forward * 1.5f;
@@ -60,20 +59,6 @@ public class ControladorJugador : MonoBehaviour
 
     private void IntentarRecuperarIngredientes()
     {
-        Ray rayo = new Ray(transform.position, transform.forward);
-        Debug.DrawRay(camara.position, camara.forward * rangoInteraccion, Color.red);
-
-        //if (Physics.Raycast(rayo, out RaycastHit hit, rangoInteraccion))
-        //{
-        //    if (hit.collider.TryGetComponent(out IInteractuable objetoInteraccion))
-        //    {
-        //        objetoInteraccion.Interactuar();
-        //    }
-        //}
-
-        if (Physics.Raycast(rayo, out RaycastHit rec, rangoInteraccion) && Input.GetKeyDown(KeyCode.R))
-        {
-            zona.RecuperarIngredientes(inventario, transform);
-        }
+        
     }
 }

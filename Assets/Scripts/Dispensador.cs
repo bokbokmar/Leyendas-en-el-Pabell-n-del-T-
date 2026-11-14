@@ -16,7 +16,8 @@ public class Dispensador : MonoBehaviour, IInteractuable
     public void Interactuar()
     {
         Debug.Log("Interaccion");
-        //inventario.AgregarItem(prefabADispensar);
-        Instantiate(prefabADispensar, inventario.manoJugador);
+        inventario.AgregarItem(prefabADispensar);
+        //GameObject clon = Instantiate(prefabADispensar, inventario.manoJugador);
+        //inventario.AgregarItem(clon);
     }
 }
