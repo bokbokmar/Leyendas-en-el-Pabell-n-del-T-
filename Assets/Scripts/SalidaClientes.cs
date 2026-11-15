@@ -14,12 +14,7 @@ public class SalidaClientes : MonoBehaviour
     {
         if (other.CompareTag("Cliente"))
         {
-            Clientes cliente = other.GetComponent<Clientes>();
-            if (cliente != null && (cliente.clienteInsatisfecho || cliente.clienteSatisfecho))
-            {
-                spawner.asientoTomado[cliente.auxiliarsoide] = false;
-                Destroy(other.gameObject);
-            }
+            
         }
     }
 }

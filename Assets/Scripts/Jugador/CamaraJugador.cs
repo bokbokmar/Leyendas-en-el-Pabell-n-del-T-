@@ -16,16 +16,7 @@ public class CamaraJugador : MonoBehaviour
 
     private float rotacionX = 0f;
     private float rotacionY = 0f;
-
-    #region referencias scripts
-    private InventarioJugador inventario;
-    private Dispensador dispensadorApuntado;
-    private ZonaEntrega zonaApuntada;
-    private ItemRecogible itemSueloApuntado;
-    private Mesa mesaApuntada;
-    private Clientes clienteApuntado;
-    private Monedas monedaApuntada;
-    #endregion
+    [SerializeField] private InventarioJugador inventario;
 
 
 
@@ -39,10 +30,6 @@ public class CamaraJugador : MonoBehaviour
     private void Update()
     {
         MoverCamara();
-        //DetectarObjetivo();
-        //IntentarInteractuar();
-        //IntentarSoltar();
-        //IntentarRecuperarIngredientes();
     }
 
     private void MoverCamara()
@@ -57,96 +44,4 @@ public class CamaraJugador : MonoBehaviour
         transform.localRotation = Quaternion.Euler(rotacionX, 0f, 0f);
         cuerpoJugador.localRotation = Quaternion.Euler(0f, rotacionY, 0f);
     }
-
-    private void DetectarObjetivo()
-    {
-        dispensadorApuntado = null;
-        zonaApuntada = null;
-        mesaApuntada = null;
-        itemSueloApuntado = null;
-        clienteApuntado = null;
-        monedaApuntada = null;
-
-        Ray ray = new Ray(transform.position, transform.forward);
-        Debug.DrawRay(transform.position, transform.forward * distanciaMaximaInteraccion, Color.red);
-        if (Physics.Raycast(ray, out RaycastHit hit, distancia, ~ignorar))
-        {
-            if (hit.transform == null) return;   // <-- protección
-
-            float dist = Vector3.Distance(transform.position, hit.transform.position);
-
-            if (dist > distanciaMaximaInteraccion) return;
-
-            if (hit.transform.TryGetComponent<Dispensador>(out Dispensador disp))
-                dispensadorApuntado = disp;
-
-            if (hit.transform.TryGetComponent<ZonaEntrega>(out ZonaEntrega zona))
-                zonaApuntada = zona;
-
-            //if (hit.transform.TryGetComponent<Mesa>(out Mesa mesa))
-            //    mesaApuntada = mesa;
-
-            if (hit.transform.TryGetComponent<Clientes>(out Clientes cli))
-                clienteApuntado = cli;
-
-            if (hit.transform.TryGetComponent<Monedas>(out Monedas moneda))
-                monedaApuntada = moneda;
-
-            if (hit.transform.TryGetComponent<ItemRecogible>(out ItemRecogible item))
-            {
-                if (item.transform.parent == null)
-                    itemSueloApuntado = item;
-            }
-        }
-    }
-
-    private void IntentarSoltar()
-    {
-        //if (!Input.GetKeyDown(teclaSoltar)) { return; }
-        //if (inventario == null || inventario.CantidadItems() == 0) { return; }
-
-        //ItemRecogible item = inventario.SacarUltimoItem();
-        //if (item == null) { return; }
-
-        //Vector3 posicion = transform.parent.transform.position + transform.forward * 1.5f;
-        //posicion.y = 0;
-        //item.transform.position = posicion;
-        //item.transform.rotation = Quaternion.identity;
-        //item.transform.SetParent(null);
-
-        //if (item.TryGetComponent<Rigidbody>(out Rigidbody rb))
-        //{
-        //    rb.isKinematic = false;
-        //    rb.useGravity = true;
-        //    rb.linearVelocity = Vector3.zero;
-        //    rb.angularVelocity = Vector3.zero;
-        //}
-
-        //if (item.TryGetComponent<Collider>(out Collider col))
-        //    col.enabled = true;
-
-        //Debug.Log("Item soltado");
-    }
-
-    private void IntentarRecuperarIngredientes()
-    {
-        if (!Input.GetKeyDown(teclaRecuperar)) return;
-        if (zonaApuntada == null) return;
-        if (inventario == null) return;
-
-        //zonaApuntada.RecuperarIngredientes(inventario, cuerpoJugador);
-    }
-
-    private int IdToTipoTe(string id)
-    {
-        switch (id)
-        {
-            case "TeVerde": return 0;
-            case "TeBlanco": return 1;
-            case "TeRojo": return 2;
-            default: return -1;
-        }
-    }
-
-
 }

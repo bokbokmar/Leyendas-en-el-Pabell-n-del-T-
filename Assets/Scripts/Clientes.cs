@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Clientes : MonoBehaviour
+public class Clientes : MonoBehaviour, IInteractuable
 {
     public int teDeseado;
-    public int auxiliarsoide;
+    public int auxiliari;
     public bool clienteSatisfecho;
     public bool clienteInsatisfecho;
     public bool clienteAtendido;
@@ -14,10 +14,9 @@ public class Clientes : MonoBehaviour
     public float tiempoEspera = 30f;
     public bool esperando;
 
-    public GameObject[] hojas;
+    public GameObject[] iconos; //Del 0, 1 y 2 son las hojas de té. El espacio 3 será el icono de espera
 
     public Spawner generador;
-    public Mesa mesa;
 
     public Transform objetivo;
     public Transform salida;
@@ -25,74 +24,70 @@ public class Clientes : MonoBehaviour
     public GameObject iconoEspera;
 
     [SerializeField] private GameObject moneda;
+    public InventarioJugador inventario;
+    public GameObject teRecibido;
+    public float numerito;
 
     private void Start()
     {
+        sentado = false;
+        esperando = false;
+        iconos = new GameObject[4];
         agente = GetComponent<NavMeshAgent>();
-        auxiliarsoide = Random.Range(0, 4);
-        generador = GameObject.Find("Spawner de Clientes").GetComponent<Spawner>();
 
-        //if (mesa == null)
-        //{
-        //    mesa = FindObjectOfType<Mesa>();
-        //}
+        generador = GameObject.Find("Spawner de Clientes").GetComponent<Spawner>();
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            iconos[i] = transform.GetChild(i).gameObject;
+        }
+
+        ElegirAsiento();
     }
 
     private void Update()
     {
-        ElegirAsiento();
-
-        if (iconoEspera != null)
+        numerito = agente.remainingDistance;
+        if (agente.remainingDistance < 0.1f)
         {
-            if (sentado && !clienteAtendido)
-                iconoEspera.SetActive(true);
-            else
-                iconoEspera.SetActive(false);
-        }
-
-        if (!agente.pathPending)
-        {
-            if (agente.remainingDistance <= agente.stoppingDistance)
-            {
-                if (!agente.hasPath)
-                {
-                    sentado = true;
-                    esperando = true;
-
-                    if (!clienteAtendido)
-                        ElegirTe();
-                }
-            }
-        }
-        else
-        {
-            sentado = false;
+            sentado = true;
+            esperando = true;
         }
 
         if (esperando)
         {
-            if (tiempoEspera > 0)
-                tiempoEspera -= Time.deltaTime;
-            else
+            //float tiempoAux = tiempoEspera;
+            //tiempoAux -= Time.deltaTime;
+            tiempoEspera -= Time.deltaTime;
+
+            if (tiempoEspera <= 0)
             {
-                tiempoEspera = 0;
                 esperando = false;
-                clienteInsatisfecho = true;
-                hojas[teDeseado].SetActive(false);
-                Irse();
+                if (!clienteSatisfecho)
+                {
+                    clienteInsatisfecho = true;
+                    Irse();
+                }
+                tiempoEspera = 30f;
             }
         }
+
+        if (clienteSatisfecho || clienteInsatisfecho)
+        {
+            Irse();
+        }
+
     }
 
-
-    private int IdToTipo(string id)
+    public void Interactuar()
     {
-        switch (id)
+        if (!agente.pathPending && !clienteAtendido)
         {
-            case "TeVerde": return 0;
-            case "TeBlanco": return 1;
-            case "TeRojo": return 2;
-            default: return -1;
+            ElegirTe();
+        }
+
+        if (clienteAtendido)
+        {
+            RecibirTe();
         }
     }
 
@@ -100,119 +95,87 @@ public class Clientes : MonoBehaviour
     {
         teDeseado = Random.Range(0, 3);
         clienteAtendido = true;
+        tiempoEspera = 30f;
 
-        for (int i = 0; i < hojas.Length; i++)
-            hojas[i].SetActive(false);
+        for (int i = 0; i < iconos.Length; i++)
+        {
+            iconos[i].SetActive(false);
+        }
 
-        hojas[teDeseado].SetActive(true);
+        iconos[teDeseado].SetActive(true);
 
         if (iconoEspera != null)
+        {
             iconoEspera.SetActive(false);
-
-        Debug.Log($"Cliente quiere té tipo {teDeseado}");
-    }
-
-
-    public void RecibirTeDirecto(ItemRecogible item)
-    {
-        if (item == null) return;
-
-        int tipoEntregado = IdToTipo(item.idIngrediente);
-
-        for (int i = 0; i < hojas.Length; i++)
-            hojas[i].SetActive(false);
-        if (iconoEspera != null)
-            iconoEspera.SetActive(false);
-
-        if (tipoEntregado == teDeseado)
-        {
-            clienteSatisfecho = true;
-            clienteInsatisfecho = false;
-            Debug.Log($"Cliente satisfecho: quería {teDeseado}, recibió {tipoEntregado}");
         }
-        else
-        {
-            clienteSatisfecho = false;
-            clienteInsatisfecho = true;
-            Debug.Log($"Cliente insatisfecho: quería {teDeseado}, recibió {tipoEntregado}");
-        }
-
-        esperando = false;
-        Irse();
-
-        Destroy(item.gameObject);
-    }
-
-
-    public void IrARecogerTe()
-    {
-        if (mesa == null) return;
-
-        agente.SetDestination(mesa.transform.position);
-
-        Invoke(nameof(IntentarRecogerDeMesa), 2f);
-    }
-
-    private void IntentarRecogerDeMesa()
-    {
-        if (mesa == null) return;
-
-        bool correcto = mesa.ClienteRecogeTe(teDeseado, this);
-
-        for (int i = 0; i < hojas.Length; i++)
-            hojas[i].SetActive(false);
-        if (iconoEspera != null)
-            iconoEspera.SetActive(false);
-
-        if (correcto)
-        {
-            clienteSatisfecho = true;
-            clienteInsatisfecho = false;
-        }
-        else
-        {
-            clienteSatisfecho = false;
-            clienteInsatisfecho = true;
-        }
-
-        esperando = false;
-        Irse();
+        //Debug.Log($"Cliente quiere té tipo {teDeseado}");
     }
 
     public void Sentarse()
     {
         if (asientoElegido)
+        {
             agente.SetDestination(objetivo.position);
+        }
     }
 
     public void ElegirAsiento()
     {
-        if (!generador.asientoTomado[auxiliarsoide])
+        auxiliari = Random.Range(0, 16);
+        if (generador.asientoTomado[auxiliari])
         {
-            generador.asientoTomado[auxiliarsoide] = true;
-            objetivo = generador.asientos[auxiliarsoide];
-            asientoElegido = true;
-            Sentarse();
+            ElegirAsiento();
         }
-        else if (!asientoElegido)
+        else
         {
-            auxiliarsoide = Random.Range(0, 4);
+            asientoElegido = true;
+            objetivo = generador.asientos[auxiliari];
+            Sentarse();
         }
     }
 
     public void Irse()
     {
-        salida = generador.transform.GetChild(1);
+        bool aux2 = false;
+        generador.ocupados--;
+        salida = generador.gameObject.transform.GetChild(1);
         agente.SetDestination(salida.position);
+
+        foreach (GameObject iconitos in iconos)
+        {
+            iconitos.SetActive(false);
+        }
 
         if (clienteSatisfecho && !clienteInsatisfecho)
         {
-            Instantiate(moneda, objetivo.GetChild(0).position, objetivo.GetChild(0).rotation);
+            //Instantiate(moneda, transform.forward * 30, transform.rotation);
             GetComponent<MeshRenderer>().material.color = Color.green;
         }
         else if (!clienteSatisfecho && clienteInsatisfecho)
         {
             GetComponent<MeshRenderer>().material.color = Color.red;
+        }
+    }
+
+    public void RecibirTe()
+    {
+        if (inventario.manoJugador.childCount < 1)
+        {
+            Debug.Log("No traes te");
+            return;
+        }
+        else
+        {
+            string aux = inventario.objetoEnMano.GetComponent<ItemRecogible>().nombreItem;
+            teRecibido = inventario.objetoEnMano;
+            if (inventario.objetoEnMano.GetComponent<ItemRecogible>().idIngrediente == teDeseado)
+            {
+                clienteSatisfecho = true;
+            }
+            else
+            {
+                clienteInsatisfecho = true;
+            }
         }
     }
 }

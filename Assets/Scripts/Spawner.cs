@@ -3,18 +3,22 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public GameObject cliente;
-
+    public InventarioJugador inventario;
     public Transform[] asientos;
+    [SerializeField] private Transform[] mesas;
     public bool[] asientoTomado;
     public Transform puntoAparicion;
 
     public float tiempoRestante;
     public bool temporizadorActivo;
     public bool puedeGenerar;
+    public int auxilia;
+    public int ocupados;
 
     private void Start()
     {
         puntoAparicion = transform.GetChild(0);
+        Sillitas();
     }
 
     private void Update()
@@ -28,7 +32,9 @@ public class Spawner : MonoBehaviour
         else if (temporizadorActivo)
         {
             if (tiempoRestante > 0)
+            {
                 tiempoRestante -= Time.deltaTime;
+            }
             else
             {
                 tiempoRestante = 0;
@@ -39,18 +45,38 @@ public class Spawner : MonoBehaviour
 
     public void Generar()
     {
-        Instantiate(cliente, puntoAparicion.position, transform.rotation);
-        tiempoRestante = 3;
+        GameObject clon = Instantiate(cliente, puntoAparicion.position, transform.rotation);
+        clon.GetComponent<Clientes>().inventario = inventario;
+        tiempoRestante = 8;
         temporizadorActivo = true;
     }
 
     public void RevisarAsientos()
     {
-        int ocupados = 0;
+        ocupados = 0;
         foreach (bool asientito in asientoTomado)
         {
-            if (asientito) ocupados++;
+            if (asientito) { ocupados++; }
         }
-        puedeGenerar = ocupados < 4;
+        if (ocupados == 16)
+        {
+            puedeGenerar = false;
+        }
+        else
+        {
+            puedeGenerar = true;
+        }
+    }
+
+    public void Sillitas()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                asientos[auxilia] = mesas[i].GetChild(j).transform;
+                auxilia = auxilia + 1;
+            }
+        }
     }
 }

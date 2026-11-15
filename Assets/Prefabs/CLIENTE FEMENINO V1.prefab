@@ -128,4 +128,5 @@ MonoBehaviour:
   mesa: {fileID: 0}
   objetivo: {fileID: 0}
   salida: {fileID: 0}
+  iconoEspera: {fileID: 0}
   moneda: {fileID: 0}

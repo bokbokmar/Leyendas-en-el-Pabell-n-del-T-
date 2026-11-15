@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class ZonaEntrega : MonoBehaviour, IInteractuable
+public class Maquina : MonoBehaviour, IInteractuable
 {
     public GameObject tazaTeVerde;
     public GameObject tazaTeBlanco;
@@ -35,7 +35,7 @@ public class ZonaEntrega : MonoBehaviour, IInteractuable
         {
             switch (objetoAgregado.nombreItem)
             {
-                case "HojaBlanca":
+                case "hojaBlanca":
                     {
                         if (!tieneHojas)
                         {
@@ -52,7 +52,7 @@ public class ZonaEntrega : MonoBehaviour, IInteractuable
                         break;
                     }
 
-                case "HojaRoja":
+                case "hojaRoja":
                     {
                         if (!tieneHojas)
                         {
@@ -69,7 +69,7 @@ public class ZonaEntrega : MonoBehaviour, IInteractuable
                         break;
                     }
 
-                case "HojaVerde":
+                case "hojaVerde":
                     {
                         if (!tieneHojas)
                         {
@@ -110,21 +110,24 @@ public class ZonaEntrega : MonoBehaviour, IInteractuable
     {
         switch (hojasEnMaquina.nombreItem)
         {
-            case "HojaBlanca":
+            case "hojaBlanca":
                 {
-                    Instantiate(tazaTeBlanco, puntoTaza.transform.position, puntoTaza.transform.rotation);
+                    GameObject clon = Instantiate(tazaTeBlanco, puntoTaza.transform.position, puntoTaza.transform.rotation);
+                    clon.GetComponent<ItemRecogible>().inventario = inventario;
                     break;
                 }
 
-            case "HojaVerde":
+            case "hojaVerde":
                 {
-                    Instantiate(tazaTeVerde, puntoTaza.transform.position, puntoTaza.transform.rotation);
+                    GameObject clon = Instantiate(tazaTeVerde, puntoTaza.transform.position, puntoTaza.transform.rotation);
+                    clon.GetComponent<ItemRecogible>().inventario = inventario;
                     break;
                 }
 
-            case "HojaRoja":
+            case "hojaRoja":
                 {
-                    Instantiate(tazaTeRojo, puntoTaza.transform.position, puntoTaza.transform.rotation);
+                    GameObject clon = Instantiate(tazaTeRojo, puntoTaza.transform.position, puntoTaza.transform.rotation);
+                    clon.GetComponent<ItemRecogible>().inventario = inventario;
                     break;
                 }
         }

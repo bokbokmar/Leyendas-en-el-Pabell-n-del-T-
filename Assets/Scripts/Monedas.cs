@@ -8,8 +8,8 @@ public class Monedas : MonoBehaviour
 
     private void Start()
     {
-        dineros = GameObject.Find("Dinerito").GetComponent<TextMeshProUGUI>();
-        relojito = GameObject.Find("INTERFAZ").GetComponent<RelojInterfaz>();
+        //dineros = GameObject.Find("Dinerito").GetComponent<TextMeshProUGUI>();
+        //relojito = GameObject.Find("INTERFAZ").GetComponent<RelojInterfaz>();
     }
 
     public void Recoger()

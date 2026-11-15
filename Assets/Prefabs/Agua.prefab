@@ -29,9 +29,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6620231090687203328}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -18.34168, y: 0.096490026, z: 10.27573}
-  m_LocalScale: {x: 0.07936024, y: 0.07936024, z: 0.07936024}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -106,11 +106,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemRecogible
   nombreItem: Agua
-  idIngrediente: Agua
+  idIngrediente: 0
   icono: {fileID: 0}
   escalaEnMano: {x: 0.1, y: 0.1, z: 0.1}
-  recogido: 0
   escalaOriginal: {x: 0, y: 0, z: 0}
+  inventario: {fileID: 0}
 --- !u!54 &2456252308173829598
 Rigidbody:
   m_ObjectHideFlags: 0

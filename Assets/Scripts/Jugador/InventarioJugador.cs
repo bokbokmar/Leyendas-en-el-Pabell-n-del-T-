@@ -11,7 +11,6 @@ public class InventarioJugador : MonoBehaviour
 
     private void Update()
     {
-        //RevisarMano();
         TirarObjetoEnMano();
     }
 
@@ -23,7 +22,13 @@ public class InventarioJugador : MonoBehaviour
         if (objetoEnMano != null) { return; }
 
         objetoEnMano = objetito;
-        Instantiate(objetoEnMano, manoJugador.transform.position, manoJugador.transform.rotation, manoJugador);
+        objetoEnMano.transform.SetParent(manoJugador);
+        objetoEnMano.transform.position = manoJugador.position;
+        objetoEnMano.transform.rotation = manoJugador.rotation;
+        objetoEnMano.GetComponent<Rigidbody>().useGravity = false;
+        objetoEnMano.GetComponent<Rigidbody>().isKinematic = true;
+        //GameObject clon = Instantiate(objetoEnMano, manoJugador.transform.position, manoJugador.transform.rotation, manoJugador);
+        //clon.GetComponent<Rigidbody>().useGravity = false;
     }
 
     public void TirarObjetoEnMano()
@@ -35,14 +40,16 @@ public class InventarioJugador : MonoBehaviour
                 Debug.Log("No traes nada en la mano :)");
                 return;
             }
-            Vector3 posicion = manoJugador.transform.position + transform.forward * 15f;
-            posicion.y = 0; //Este vector es para dejar el objeto de la mano en el suelo
+            //Vector3 posicion = manoJugador.transform.position + transform.forward * 15f;
+            //posicion.y = 0; //Este vector es para dejar el objeto de la mano en el suelo
 
             GameObject objetoTirado = manoJugador.GetChild(0).gameObject;
 
-            objetoTirado.transform.position = posicion;
-            objetoTirado.transform.rotation = Quaternion.identity;
+            //objetoTirado.transform.position = posicion;
+            //objetoTirado.transform.rotation = Quaternion.identity;
             objetoTirado.transform.SetParent(null);
+            objetoTirado.GetComponent<Rigidbody>().useGravity = true;
+            objetoEnMano.GetComponent<Rigidbody>().isKinematic = false;
             objetoEnMano = null;
         }
     }

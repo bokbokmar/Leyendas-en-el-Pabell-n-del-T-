@@ -130,7 +130,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
-  m_Speed: 100
+  m_Speed: 200
   m_Acceleration: 15
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Clientes
   teDeseado: 0
-  auxiliarsoide: 0
+  auxiliari: 0
   clienteSatisfecho: 0
   clienteInsatisfecho: 0
   clienteAtendido: 0
@@ -163,16 +163,15 @@ MonoBehaviour:
   asientoElegido: 0
   tiempoEspera: 30
   esperando: 0
-  hojas:
-  - {fileID: 5386518898299017890}
-  - {fileID: 3455204954025700604}
-  - {fileID: 3560163410886418002}
+  iconos: []
   generador: {fileID: 0}
-  mesa: {fileID: 0}
   objetivo: {fileID: 0}
   salida: {fileID: 0}
   iconoEspera: {fileID: 9005678793767471901}
   moneda: {fileID: 3114126344781070657, guid: e48aac7ba1f3d6a4daa1b36cb45012cc, type: 3}
+  inventario: {fileID: 0}
+  teRecibido: {fileID: 0}
+  numerito: 0
 --- !u!1 &3455204954025700604
 GameObject:
   m_ObjectHideFlags: 0
