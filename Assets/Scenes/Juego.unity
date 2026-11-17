@@ -4130,6 +4130,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Escena
       objectReference: {fileID: 0}
+    - target: {fileID: 5066698831837984905, guid: e1652d7cc8d6628488b3a8495cffd5fd, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5922792563743365054, guid: e1652d7cc8d6628488b3a8495cffd5fd, type: 3}
       propertyPath: m_Layer
       value: 0

@@ -176,6 +176,8 @@ public class Clientes : MonoBehaviour, IInteractuable
             {
                 clienteInsatisfecho = true;
             }
+            Destroy(inventario.manoJugador.GetChild(0).gameObject);
+            inventario.objetoEnMano = null;
         }
     }
 }
