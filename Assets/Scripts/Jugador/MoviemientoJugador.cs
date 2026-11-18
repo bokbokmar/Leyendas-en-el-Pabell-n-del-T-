@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MoviemientoJugador : MonoBehaviour
 {
+    public Image combustibleJetPack;
+
     [Header("Movimiento")]
     [SerializeField] private float movX;
     [SerializeField] private float movZ;
@@ -18,7 +21,7 @@ public class MoviemientoJugador : MonoBehaviour
     public float gravedad = -9.81f;
 
     private CharacterController controlador;
-    private float combustibleActual;
+    [SerializeField] private float combustibleActual;
     private float velocidadVertical = 0f;
     private bool enSuelo;
 
@@ -44,6 +47,11 @@ public class MoviemientoJugador : MonoBehaviour
         movimientoFinal.y = velocidadVertical;
 
         controlador.Move(movimientoFinal * Time.deltaTime);
+
+        if (combustibleJetPack != null)
+        {
+            combustibleJetPack.fillAmount = combustibleActual / combustibleMaximo;
+        }
     }
 
     private void Moverse()
@@ -55,9 +63,13 @@ public class MoviemientoJugador : MonoBehaviour
     private void AplicarGravedad()
     {
         if (enSuelo && velocidadVertical < 0f)
+        {
             velocidadVertical = -2f;
+        }
         else
+        {
             velocidadVertical += gravedad * Time.deltaTime;
+        }
     }
 
     private void ProcesarJetpack()
