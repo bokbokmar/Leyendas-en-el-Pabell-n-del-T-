@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
+    public GameManager manager;
     public GameObject cliente;
     public InventarioJugador inventario;
     public Transform[] asientos;
@@ -17,6 +18,7 @@ public class Spawner : MonoBehaviour
 
     private void Start()
     {
+        manager = gameObject.GetComponent<GameManager>();
         puntoAparicion = transform.GetChild(0);
         Sillitas();
     }
@@ -47,6 +49,7 @@ public class Spawner : MonoBehaviour
     {
         GameObject clon = Instantiate(cliente, puntoAparicion.position, transform.rotation);
         clon.GetComponent<Clientes>().inventario = inventario;
+        clon.GetComponent<Clientes>().manager = manager;
         tiempoRestante = 8;
         temporizadorActivo = true;
     }

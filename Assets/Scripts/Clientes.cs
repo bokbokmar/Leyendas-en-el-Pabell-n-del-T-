@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -27,6 +28,8 @@ public class Clientes : MonoBehaviour, IInteractuable
     public InventarioJugador inventario;
     public GameObject teRecibido;
     public float numerito;
+    public TextMeshProUGUI dineros;
+    public GameManager manager;
 
     private void Start()
     {
@@ -35,7 +38,7 @@ public class Clientes : MonoBehaviour, IInteractuable
         iconos = new GameObject[4];
         agente = GetComponent<NavMeshAgent>();
 
-        generador = GameObject.Find("Spawner de Clientes").GetComponent<Spawner>();
+        generador = GameObject.Find("Omnissiah").GetComponent<Spawner>();
         for (int i = 0; i < transform.childCount; i++)
         {
             iconos[i] = transform.GetChild(i).gameObject;
@@ -71,10 +74,10 @@ public class Clientes : MonoBehaviour, IInteractuable
             }
         }
 
-        if (clienteSatisfecho || clienteInsatisfecho)
-        {
-            Irse();
-        }
+        //if (clienteSatisfecho || clienteInsatisfecho)
+        //{
+        //    Irse();
+        //}
 
     }
 
@@ -136,7 +139,7 @@ public class Clientes : MonoBehaviour, IInteractuable
 
     public void Irse()
     {
-        bool aux2 = false;
+        //bool aux2 = false;
         generador.ocupados--;
         salida = generador.gameObject.transform.GetChild(1);
         agente.SetDestination(salida.position);
@@ -149,6 +152,7 @@ public class Clientes : MonoBehaviour, IInteractuable
         if (clienteSatisfecho && !clienteInsatisfecho)
         {
             //Instantiate(moneda, transform.forward * 30, transform.rotation);
+            DejarDinero();
             GetComponent<MeshRenderer>().material.color = Color.green;
         }
         else if (!clienteSatisfecho && clienteInsatisfecho)
@@ -178,6 +182,14 @@ public class Clientes : MonoBehaviour, IInteractuable
             }
             Destroy(inventario.manoJugador.GetChild(0).gameObject);
             inventario.objetoEnMano = null;
+
+            Irse();
         }
+    }
+
+    public void DejarDinero()
+    {
+        GameObject clon = Instantiate(moneda, transform.forward * 30, transform.rotation);
+        clon.GetComponent<Monedas>().manager = manager;
     }
 }

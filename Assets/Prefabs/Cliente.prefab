@@ -168,10 +168,11 @@ MonoBehaviour:
   objetivo: {fileID: 0}
   salida: {fileID: 0}
   iconoEspera: {fileID: 9005678793767471901}
-  moneda: {fileID: 3114126344781070657, guid: e48aac7ba1f3d6a4daa1b36cb45012cc, type: 3}
+  moneda: {fileID: 8531688568915986095, guid: b1172a0e96126f249849ab2da0af8b61, type: 3}
   inventario: {fileID: 0}
   teRecibido: {fileID: 0}
   numerito: 0
+  dineros: {fileID: 0}
 --- !u!1 &3455204954025700604
 GameObject:
   m_ObjectHideFlags: 0

@@ -34,8 +34,8 @@ public class CamaraJugador : MonoBehaviour
 
     private void MoverCamara()
     {
-        float mouseX = Input.GetAxis("Mouse X") * sensibilidad;
-        float mouseY = Input.GetAxis("Mouse Y") * sensibilidad;
+        float mouseX = Input.GetAxis("Mouse X") * sensibilidad * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensibilidad * Time.deltaTime;
 
         rotacionX -= mouseY;
         rotacionX = Mathf.Clamp(rotacionX, -80f, 80f);
